@@ -1,3 +1,4 @@
+
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -17,9 +18,16 @@ app.get('/', (req, res) => {
 
 // Handle WebSocket connections
 io.on('connection', (socket) => {
+  console.log('A user connected');
 
-  //write your code here
+  socket.on('message', (message) => {
+    socket.broadcast.emit('message', message);
+  });
 
+  // Handle client disconnection
+  socket.on('disconnect', () => {
+    console.log('A user disconnected');
+  });
 });
 
 // Start the server
@@ -28,4 +36,4 @@ server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-module.exports = {app}
+module.exports = { app };
